@@ -120,7 +120,7 @@ function getRecommendation(category: Threat['category']): string {
     'data-exfiltration': 'Block external URL references in tool descriptions. Validate all URLs against an allowlist.',
     'privilege-escalation': 'Ensure tool descriptions cannot reference or invoke other tools. Apply strict sandboxing.',
     'shadow-tool': 'Review the tool implementation to verify it matches its description. Flag for manual audit.',
-    'cross-tool-attack': 'Isolate tool contexts. Do not allow one tool\'s description to influence how other tools are selected or used.',
+    'cross-tool-attack': "Isolate tool contexts. Do not allow one tool's description to influence how other tools are selected or used.",
     'encoding-abuse': 'Decode and inspect all encoded content in tool descriptions before use. Block suspicious encodings.',
   };
   return recommendations[category] ?? 'Review and sanitize tool definition manually.';

@@ -37,8 +37,6 @@ const HIDDEN_UNICODE_RULE: DetectionRule = {
   description: 'Detects zero-width characters, RTL overrides, and invisible Unicode used to hide instructions',
   detect(tool: MCPToolDefinition): RuleMatch[] {
     const matches: RuleMatch[] = [];
-    // Zero-width space, zero-width joiner, zero-width non-joiner, 
-    // soft hyphen, RTL/LTR override, word joiner, invisible chars
     const hiddenPattern = /[\u200B\u200C\u200D\u200E\u200F\u00AD\u2028\u2029\u202A-\u202E\u2060\u2061-\u2064\uFEFF\u00A0]/g;
 
     for (const { field, text } of getAllTextFields(tool)) {
@@ -111,7 +109,7 @@ const DATA_EXFILTRATION_RULE: DetectionRule = {
     const matches: RuleMatch[] = [];
     const patterns = [
       { regex: /https?:\/\/[^\s"'<>]+/gi, label: 'External URL reference' },
-      { regex: /webhook[s]?[\.\/_-]?url/i, label: 'Webhook URL reference' },
+      { regex: /webhook[s]?[\.\/\_-]?url/i, label: 'Webhook URL reference' },
       { regex: /\bfetch\s*\(/i, label: 'Fetch API reference' },
       { regex: /\bcurl\s+/i, label: 'curl command reference' },
       { regex: /\bwget\s+/i, label: 'wget command reference' },
@@ -126,7 +124,8 @@ const DATA_EXFILTRATION_RULE: DetectionRule = {
 
     for (const { field, text } of getAllTextFields(tool)) {
       for (const { regex, label } of patterns) {
-        const allMatches = text.matchAll(regex);
+        const globalRegex = regex.global ? regex : new RegExp(regex.source, regex.flags + 'g');
+        const allMatches = text.matchAll(globalRegex);
         for (const match of allMatches) {
           matches.push({
             field,
